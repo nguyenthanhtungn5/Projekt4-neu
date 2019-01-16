@@ -13,7 +13,7 @@ services:
   # Falls Sie das Person-SCS implementieren
   # ergänzen Sie diesen Teil
   person:
-    image: person-scs
+    build: ./person-scs
     environment:
       - DATABASE_HOST=persondb
       - DATABASE_USER=root
@@ -23,26 +23,34 @@ services:
       - persondb
   persondb:
     image: mysql:latest
-    environment: 
+    environment:
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_DATABASE=personen
       - MYSQL_PASSWORD=root
+    volumes:
+      - ./datavolume_person:/var/lib/mysql
   # ========================================
   # Falls Sie das Projekt-SCS implementieren
   # ergänzen Sie diesen Teil
   projekt:
-    image: projekt-scs
-    environment:
-      - DATABASE_HOST=projektdb
-      - DATABASE_USER=root
-      - DATABASE_PASSWORD=root
-      - DATABASE_NAME=projekte
-    depends_on:
-      - projektdb
+    image: hashicorp/http-echo
+    command: -listen=:8080 -text="Hello from projekt"
+
   projektdb:
-    image: mysql:latest
-    environment: 
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=projekte
-      - MYSQL_PASSWORD=root    
+    image: hashicorp/http-echo
+    command: -listen=:3306 -text="I am just a dummy"
+  #   build: ./projekt-scs
+  #   environment:
+  #     - DATABASE_HOST=projektdb
+  #     - DATABASE_USER=root
+  #     - DATABASE_PASSWORD=root
+  #     - DATABASE_NAME=projekte
+  #   depends_on:
+  #     - projektdb
+  # projektdb:
+  #   image: mysql:latest
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=root
+  #     - MYSQL_DATABASE=projekte
+  #     - MYSQL_PASSWORD=root
   # ========================================
